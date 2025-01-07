@@ -48,6 +48,10 @@ import TicketMachine from "../../static/icons/facilities/TicketMachine";
 import WaitingRoom from "../../static/icons/facilities/WaitingRoom";
 import TransportSign from "../../static/icons/TransportSign";
 import { getIn } from "../../utils";
+import {
+  getAllowanceInfoFromLocationPermissions,
+  getStopPermissions,
+} from "../../utils/permissionsUtils";
 import AltNamesDialog from "../Dialogs/AltNamesDialog";
 import KeyValuesDialog from "../Dialogs/KeyValuesDialog";
 import TariffZonesDialog from "../Dialogs/TariffZonesDialog";
@@ -826,12 +830,18 @@ class StopPlaceDetails extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  stopPlace: state.stopPlace.current,
-  isPublicCodePrivateCodeEnabled:
-    state.stopPlace.enablePublicCodePrivateCodeOnStopPlaces,
-  keyValuesDialogOpen: state.user.keyValuesDialogOpen,
-  allowsInfo: state.roles.allowanceInfo,
-});
+const mapStateToProps = (state) => {
+  const stopPlace = state.stopPlace.current;
+  const allowsInfo = stopPlace.permissions
+    ? getStopPermissions(state.stopPlace.current)
+    : getAllowanceInfoFromLocationPermissions(state.user.locationPermissions);
+  return {
+    stopPlace,
+    isPublicCodePrivateCodeEnabled:
+      state.stopPlace.enablePublicCodePrivateCodeOnStopPlaces,
+    keyValuesDialogOpen: state.user.keyValuesDialogOpen,
+    allowsInfo,
+  };
+};
 
 export default connect(mapStateToProps)(StopPlaceDetails);

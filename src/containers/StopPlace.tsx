@@ -29,22 +29,24 @@ import InformationManager from "../singletons/InformationManager";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import "../styles/main.css";
-import { getIn } from "../utils";
+import { getStopPermissions } from "../utils/permissionsUtils";
 import LoadingPage from "./LoadingPage";
 
 const selectProps = createSelector(
   (state: RootState) => state,
-  (state) => ({
-    isCreatingPolylines: state.stopPlace.isCreatingPolylines,
-    disabled:
-      (state.stopPlace.current &&
-        state.stopPlace.current.permanentlyTerminated) ||
-      !getIn(state.roles, ["allowanceInfo", "canEdit"], false),
-    stopPlace: state.stopPlace.current || state.stopPlace.newStop,
-    newStopCreated: state.user.newStopCreated,
-    originalStopPlace: state.stopPlace.originalCurrent,
-    stopPlaceLoading: state.stopPlace.loading,
-  }),
+  (state) => {
+    return {
+      isCreatingPolylines: state.stopPlace.isCreatingPolylines,
+      disabled:
+        (state.stopPlace.current &&
+          state.stopPlace.current.permanentlyTerminated) ||
+        !getStopPermissions(state.stopPlace.current).canEdit,
+      stopPlace: state.stopPlace.current || state.stopPlace.newStop,
+      newStopCreated: state.user.newStopCreated,
+      originalStopPlace: state.stopPlace.originalCurrent,
+      stopPlaceLoading: state.stopPlace.loading,
+    };
+  },
 );
 
 export const StopPlace = () => {

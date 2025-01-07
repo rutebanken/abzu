@@ -37,6 +37,9 @@
           "topographicPlaceType": "municipality",
           "__typename": "TopographicPlaceType"
         },
+        "permissions": {
+          "canEdit": true
+        },
         "quays": [
           {
             "id": "NSR:Quay:1694",

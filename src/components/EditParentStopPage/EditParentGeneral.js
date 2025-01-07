@@ -35,7 +35,8 @@ import * as types from "../../actions/Types";
 import { MutationErrorCodes } from "../../models/ErrorCodes";
 import mapToMutationVariables from "../../modelUtils/mapToQueryVariables";
 import SettingsManager from "../../singletons/SettingsManager";
-import { getIn, getIsCurrentVersionMax } from "../../utils/";
+import { getIsCurrentVersionMax } from "../../utils/";
+import { getStopPermissions } from "../../utils/permissionsUtils";
 import AddAdjacentStopsDialog from "../Dialogs/AddAdjacentStopsDialog";
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
 import RemoveStopFromParentDialog from "../Dialogs/RemoveStopFromParentDialog";
@@ -512,7 +513,7 @@ class EditParentGeneral extends React.Component {
   }
 }
 
-const mapStateToProps = ({ stopPlace, mapUtils, roles, user }) => ({
+const mapStateToProps = ({ stopPlace, mapUtils, user }) => ({
   stopPlace: stopPlace.current,
   versions: stopPlace.versions,
   activeMap: mapUtils.activeMap,
@@ -520,7 +521,7 @@ const mapStateToProps = ({ stopPlace, mapUtils, roles, user }) => ({
   removeStopPlaceFromParentOpen: mapUtils.removeStopPlaceFromParentOpen,
   removingStopPlaceFromParentId: mapUtils.removingStopPlaceFromParentId,
   adjacentStopDialogOpen: user.adjacentStopDialogOpen,
-  canDeleteStop: getIn(roles, ["allowanceInfo", "canDeleteStop"], false),
+  canDeleteStop: getStopPermissions(stopPlace).canDelete,
   deleteStopDialogOpen: mapUtils.deleteStopDialogOpen,
   originalStopPlace: stopPlace.originalCurrent,
   serverTimeDiff: user.serverTimeDiff,

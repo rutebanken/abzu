@@ -103,23 +103,16 @@ class StopPlacesMap extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    position: state.stopPlace.centerPosition,
-    neighbourMarkersCount: state.stopPlace.neighbourStops
-      ? state.stopPlace.neighbourStops.length
-      : 0,
-    markers: getMarkersForMap(state),
-    kc: state.roles.kc,
-    zoom: state.stopPlace.zoom,
-    isCreatingNewStop: state.user.isCreatingNewStop,
-    activeBaselayer: state.user.activeBaselayer,
-    ignoreStopId: getIn(
-      state.stopPlace,
-      ["activeSearchResult", "id"],
-      undefined,
-    ),
-  };
-};
+const mapStateToProps = (state) => ({
+  position: state.stopPlace.centerPosition,
+  neighbourMarkersCount: state.stopPlace.neighbourStops
+    ? state.stopPlace.neighbourStops.length
+    : 0,
+  markers: getMarkersForMap(state),
+  zoom: state.stopPlace.zoom,
+  isCreatingNewStop: state.user.isCreatingNewStop,
+  activeBaselayer: state.user.activeBaselayer,
+  ignoreStopId: getIn(state.stopPlace, ["activeSearchResult", "id"], undefined),
+});
 
 export default injectIntl(connect(mapStateToProps)(StopPlacesMap));

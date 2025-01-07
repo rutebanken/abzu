@@ -18,7 +18,6 @@ import type { Reducer } from "redux";
 import groupOfStopPlaceReducer from "./groupOfStopPlacesReducer";
 import mapReducer from "./mapReducer";
 import reportReducer from "./reportReducer";
-import rolesReducer from "./rolesReducer";
 import snackbarReducer from "./snackbarReducer";
 import stopPlaceReducer from "./stopPlaceReducer";
 import userReducer from "./userReducer";
@@ -31,7 +30,6 @@ export const createRootReducer = (routerReducer: Reducer) =>
     mapUtils: mapReducer,
     stopPlace: stopPlaceReducer,
     report: reportReducer,
-    roles: rolesReducer,
     snackbar: snackbarReducer,
     stopPlacesGroup: groupOfStopPlaceReducer,
     zones: zonesSlice,

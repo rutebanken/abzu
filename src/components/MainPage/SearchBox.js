@@ -15,13 +15,7 @@ limitations under the Licence. */
 import MdMore from "@mui/icons-material/ExpandMore";
 import MdLocationSearching from "@mui/icons-material/LocationSearching";
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-} from "@mui/material";
+import { Box, Button, FormControlLabel, FormGroup } from "@mui/material";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -38,11 +32,10 @@ import {
 } from "../../actions/TiamatActions";
 import { getPrimaryDarkerColor } from "../../config/themeConfig";
 import { Entities } from "../../models/Entities";
-import RoleParser from "../../roles/rolesParser";
 import Routes from "../../routes/";
 import FavoriteManager from "../../singletons/FavoriteManager";
 import MdSpinner from "../../static/icons/spinner";
-import { getIn } from "../../utils/";
+import { getStopPermissions } from "../../utils/permissionsUtils";
 import CoordinatesDialog from "../Dialogs/CoordinatesDialog";
 import FavoriteNameDialog from "../Dialogs/FavoriteNameDialog";
 import ModalityFilter from "../EditStopPage/ModalityFilter";
@@ -365,11 +358,11 @@ class SearchBox extends React.Component {
       topoiChips,
       topographicalPlaces,
       canEdit,
-      roleAssignments,
       lookupCoordinatesOpen,
       newStopIsMultiModal,
       dataSource,
       showFutureAndExpired,
+      isGuest,
     } = this.props;
     const { coordinatesDialogOpen, showMoreFilterOptions, loading } =
       this.state;
@@ -684,7 +677,7 @@ class SearchBox extends React.Component {
                 formatMessage={formatMessage}
               />
             ) : null}
-            {!RoleParser.isGuest(roleAssignments) && (
+            {!isGuest && (
               <div style={{ marginTop: 10 }}>
                 {isCreatingNewStop ? (
                   <NewStopPlace
@@ -780,15 +773,11 @@ const mapStateToProps = (state) => {
     missingCoordinatesMap: state.user.missingCoordsMap,
     searchText: state.user.searchFilters.text,
     topographicalPlaces: state.stopPlace.topographicalPlaces || [],
-    canEdit: getIn(
-      state.roles,
-      ["allowanceInfoSearchResult", "canEdit"],
-      false,
-    ),
-    roleAssignments: state.roles.auth.roleAssignments,
+    canEdit: getStopPermissions(state.stopPlace.current).canEdit,
     lookupCoordinatesOpen: state.user.lookupCoordinatesOpen,
     newStopIsMultiModal: state.user.newStopIsMultiModal,
     showFutureAndExpired: state.user.searchFilters.showFutureAndExpired,
+    isGuest: state.user.isGuest,
   };
 };
 

@@ -41,14 +41,15 @@ import {
   findStopForReport as findStopForReportQuery,
   findTagByNameQuery,
   getGroupOfStopPlaceQuery,
+  getLocationPermissions,
   getMergeInfoStopPlace,
   getParkingForMultipleStopPlaces as getParkingForMultipleStopPlacesQuery,
-  getPolygons as getPolygonsQuery,
   getQueryTopographicPlaces,
   getStopById,
   getStopPlacesById,
   getTagsByNameQuery,
   getTagsQuery,
+  getUserPermissionsQuery,
   neighbourStopPlaceQuays,
   stopPlaceAndPathLinkByVersion,
   stopPlaceBBQuery,
@@ -140,7 +141,7 @@ export const findTagByName = (name) => async (dispatch, getState) =>
     variables: {
       name,
     },
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const addTag =
@@ -153,7 +154,7 @@ export const addTag =
         name,
         comment,
       },
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const getStopPlaceById = (id) => async (dispatch, getState) =>
@@ -163,7 +164,7 @@ export const getStopPlaceById = (id) => async (dispatch, getState) =>
     variables: {
       id,
     },
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const getAddStopPlaceInfo =
@@ -171,7 +172,7 @@ export const getAddStopPlaceInfo =
     handleQuery(getTiamatClient(), {
       query: getStopPlacesById(stopPlaceIds),
       fetchPolicy: "network-only",
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const saveStopPlaceBasedOnType =
@@ -189,7 +190,7 @@ export const saveStopPlaceBasedOnType =
           mutation: mutateStopPlace,
           variables,
           fetchPolicy: "no-cache",
-          context: await getContext(getState().roles.auth),
+          context: await getContext(getState().user.auth),
         })(dispatch)
           .then((result) => {
             if (result.data.mutateStopPlace[0].id) {
@@ -213,7 +214,7 @@ export const saveStopPlaceBasedOnType =
           mutation: updateChildOfParentStop,
           variables,
           fetchPolicy: "no-cache",
-          context: await getContext(getState().roles.auth),
+          context: await getContext(getState().user.auth),
         })(dispatch)
           .then((result) => {
             resolve(stopPlace.id);
@@ -230,7 +231,7 @@ export const saveParentStopPlace = (variables) => async (dispatch, getState) =>
     mutation: mutateParentStopPlace,
     variables,
     fetchPolicy: "no-cache",
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const removeStopPlaceFromMultiModalStop =
@@ -242,7 +243,7 @@ export const removeStopPlaceFromMultiModalStop =
         parentSiteRef,
       },
       fetchPolicy: "no-cache",
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const deleteQuay = (variables) => async (dispatch, getState) => {
@@ -250,7 +251,7 @@ export const deleteQuay = (variables) => async (dispatch, getState) => {
     mutation: mutateDeleteQuay,
     variables,
     fetchPolicy: "no-cache",
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 };
 
@@ -261,7 +262,7 @@ export const deleteStopPlace = (stopPlaceId) => async (dispatch, getState) =>
       stopPlaceId,
     },
     fetchPolicy: "no-cache",
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const terminateStop =
@@ -276,7 +277,7 @@ export const terminateStop =
         modificationEnumeration: shouldTerminatePermanently ? "delete" : null,
       },
       fetchPolicy: "no-cache",
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const addToMultiModalStopPlace =
@@ -288,7 +289,7 @@ export const addToMultiModalStopPlace =
         parentSiteRef,
       },
       fetchPolicy: "no-cache",
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const createParentStopPlace =
@@ -312,7 +313,7 @@ export const createParentStopPlace =
         stopPlaceIds,
       },
       fetchPolicy: "no-cache",
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const mutateGroupOfStopPlace =
@@ -322,7 +323,7 @@ export const mutateGroupOfStopPlace =
         mutation: mutateGroupOfStopPlaces,
         variables,
         fetchPolicy: "no-cache",
-        context: await getContext(getState().roles.auth),
+        context: await getContext(getState().user.auth),
       })(dispatch)
         .then(({ data }) => {
           const id = data["mutateGroupOfStopPlaces"]
@@ -343,7 +344,7 @@ export const getStopPlaceVersions =
         id: stopPlaceId,
       },
       fetchPolicy: "network-only",
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const mergeQuays =
@@ -358,7 +359,7 @@ export const mergeQuays =
         versionComment,
       },
       fetchPolicy: "no-cache",
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const getStopPlaceWithAll = (id) => async (dispatch, getState) =>
@@ -368,6 +369,7 @@ export const getStopPlaceWithAll = (id) => async (dispatch, getState) =>
       id,
     },
     fetchPolicy: "network-only",
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const mergeAllQuaysFromStop =
@@ -382,7 +384,7 @@ export const mergeAllQuaysFromStop =
         toVersionComment,
       },
       fetchPolicy: "no-cache",
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const moveQuaysToStop =
@@ -397,7 +399,7 @@ export const moveQuaysToStop =
         toVersionComment,
       },
       fetchPolicy: "no-cache",
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const moveQuaysToNewStop =
@@ -411,7 +413,7 @@ export const moveQuaysToNewStop =
         toVersionComment,
       },
       fetchPolicy: "no-cache",
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const getNeighbourStops =
@@ -427,21 +429,14 @@ export const getNeighbourStops =
         lonMin: bounds.getSouthWest().lng,
         lonMax: bounds.getNorthEast().lng,
       },
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
-
-export const getPolygons = (ids) => async (dispatch, getState) =>
-  handleQuery(getTiamatClient(), {
-    fetchPolicy: "network-only",
-    query: getPolygonsQuery(ids),
-    context: await getContext(getState().roles.auth),
-  })(dispatch);
 
 export const getTopographicPlaces = (ids) => async (dispatch, getState) =>
   handleQuery(getTiamatClient(), {
     fetchPolicy: "network-only",
     query: getQueryTopographicPlaces(ids),
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const getMergeInfoForStops =
@@ -452,7 +447,7 @@ export const getMergeInfoForStops =
       variables: {
         stopPlaceId,
       },
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const findEntitiesWithFilters =
@@ -480,7 +475,7 @@ export const findEntitiesWithFilters =
         pointInTime: showFutureAndExpired ? null : new Date().toISOString(),
         versionValidity: showFutureAndExpired ? "MAX_VERSION" : null,
       },
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
   };
 
@@ -491,7 +486,7 @@ export const findTopographicalPlace = (query) => async (dispatch, getState) =>
     variables: {
       query,
     },
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const getTags = (idReference) => async (dispatch, getState) =>
@@ -501,7 +496,7 @@ export const getTags = (idReference) => async (dispatch, getState) =>
     variables: {
       idReference,
     },
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const getTagsByName = (name) => async (dispatch, getState) =>
@@ -511,7 +506,7 @@ export const getTagsByName = (name) => async (dispatch, getState) =>
     variables: {
       name,
     },
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const removeTag = (name, idReference) => async (dispatch, getState) =>
@@ -522,7 +517,7 @@ export const removeTag = (name, idReference) => async (dispatch, getState) =>
       idReference,
     },
     fetchPolicy: "no-cache",
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const getGroupOfStopPlacesById = (id) => async (dispatch, getState) =>
@@ -532,7 +527,7 @@ export const getGroupOfStopPlacesById = (id) => async (dispatch, getState) =>
       id,
     },
     fetchPolicy: "network-only",
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const deleteGroupOfStopPlaces = (id) => async (dispatch, getState) =>
@@ -542,7 +537,7 @@ export const deleteGroupOfStopPlaces = (id) => async (dispatch, getState) =>
       id,
     },
     fetchPolicy: "no-cache",
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const deleteParking = (id) => async (dispatch, getState) =>
@@ -552,7 +547,7 @@ export const deleteParking = (id) => async (dispatch, getState) =>
       id,
     },
     fetchPolicy: "no-cache",
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const getStopPlaceAndPathLinkByVersion =
@@ -564,7 +559,7 @@ export const getStopPlaceAndPathLinkByVersion =
         id,
         version: parseInt(version),
       },
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const findStopForReport =
@@ -573,7 +568,7 @@ export const findStopForReport =
       query: findStopForReportQuery,
       fetchPolicy: "network-only",
       variables: queryVariables,
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const getParkingForMultipleStopPlaces =
@@ -581,7 +576,7 @@ export const getParkingForMultipleStopPlaces =
     handleQuery(getTiamatClient(), {
       query: getParkingForMultipleStopPlacesQuery(stopPlaceIds),
       fetchPolicy: "network-only",
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const topographicalPlaceSearch =
@@ -592,7 +587,7 @@ export const topographicalPlaceSearch =
       variables: {
         query: searchText,
       },
-      context: await getContext(getState().roles.auth),
+      context: await getContext(getState().user.auth),
     })(dispatch);
 
 export const getNeighbourStopPlaceQuays = (id) => async (dispatch, getState) =>
@@ -602,7 +597,7 @@ export const getNeighbourStopPlaceQuays = (id) => async (dispatch, getState) =>
     variables: {
       id: id,
     },
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const savePathLink = (PathLink) => async (dispatch, getState) =>
@@ -610,7 +605,7 @@ export const savePathLink = (PathLink) => async (dispatch, getState) =>
     fetchPolicy: "no-cache",
     mutation: mutatePathLink,
     variables: { PathLink },
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
 
 export const saveParking = (Parking) => async (dispatch, getState) =>
@@ -618,5 +613,26 @@ export const saveParking = (Parking) => async (dispatch, getState) =>
     fetchPolicy: "no-cache",
     mutation: mutateParking,
     variables: { Parking },
-    context: await getContext(getState().roles.auth),
+    context: await getContext(getState().user.auth),
   })(dispatch);
+
+export const getLocationPermissionsForCoordinates = (longitude, latitude) => {
+  return async (dispatch, getState) => {
+    return handleQuery(getTiamatClient(), {
+      fetchPolicy: "no-cache",
+      query: getLocationPermissions,
+      variables: { longitude, latitude },
+      context: await getContext(getState().user.auth),
+    })(dispatch);
+  };
+};
+
+export const getUserPermissions = () => {
+  return async (dispatch, getState) => {
+    return handleQuery(getTiamatClient(), {
+      fetchPolicy: "no-cache",
+      query: getUserPermissionsQuery,
+      context: await getContext(getState().user.auth),
+    })(dispatch);
+  };
+};

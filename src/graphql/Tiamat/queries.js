@@ -107,6 +107,8 @@ export const stopPlaceBBQuery = gql`
         __typename
         stopPlaceType
         submode
+
+        ...EntityPermissions
       }
       ... on ParentStopPlace {
         children {
@@ -122,24 +124,13 @@ export const stopPlaceBBQuery = gql`
             name {
               value
             }
-            topographicPlaceType
           }
-          validBetween {
-            fromDate
-            toDate
-          }
-          name {
-            value
-            lang
-          }
+          ...EntityPermissions
         }
-        name {
-          value
-        }
-        __typename
       }
     }
   }
+  ${Fragments.entityPermissions}
 `;
 
 export const allEntities = gql`
@@ -260,8 +251,10 @@ export const getStopById = gql`
             value
           }
         }
+        ...EntityPermissions
       }
       ... on ParentStopPlace {
+        ...EntityPermissions
         geometry {
           legacyCoordinates
           type
@@ -280,10 +273,12 @@ export const getStopById = gql`
           geometry {
             legacyCoordinates
           }
+          ...EntityPermissions
         }
       }
     }
   }
+  ${Fragments.entityPermissions}
 `;
 
 export const findStop = gql`
@@ -300,6 +295,9 @@ export const findStop = gql`
       id
       name {
         value
+      }
+      permissions {
+        canEdit
       }
       members {
         __typename
@@ -328,6 +326,9 @@ export const findStop = gql`
           submode
           version
           stopPlaceType
+          permissions {
+            canEdit
+          }
         }
       }
     }
@@ -389,6 +390,9 @@ export const findStop = gql`
         }
       }
       modificationEnumeration
+      permissions {
+        canEdit
+      }
       ... on StopPlace {
         stopPlaceType
         submode
@@ -691,29 +695,6 @@ export const getStopPlacesById = (stopPlaceIds) => {
   `;
 };
 
-export const getPolygons = (ids) => {
-  let queryContent = "";
-
-  ids.forEach((id) => {
-    let alias = id.replace(":", "").replace(":", "");
-
-    queryContent += `
-        ${alias}: topographicPlace(id: "${id}") {
-           id
-            polygon {
-                legacyCoordinates
-            }
-        }
-    `;
-  });
-
-  return gql`
-      query getPolygons {
-          ${queryContent}
-      }
-  `;
-};
-
 export const getQueryTopographicPlaces = (ids) => {
   let queryContent = "";
 
@@ -807,6 +788,31 @@ export const findFareZonesForFilter = gql`
       name {
         value
       }
+    }
+  }
+`;
+
+export const getLocationPermissions = gql`
+  query getLocationPermissions(
+    $longitude: BigDecimal!
+    $latitude: BigDecimal!
+  ) {
+    locationPermissions(longitude: $longitude, latitude: $latitude) {
+      allowedStopPlaceTypes
+      allowedSubmodes
+      bannedStopPlaceTypes
+      bannedSubmodes
+      canDelete
+      canEdit
+    }
+  }
+`;
+
+export const getUserPermissionsQuery = gql`
+  query getUserPermissions {
+    userPermissions {
+      allowNewStopEverywhere
+      isGuest
     }
   }
 `;

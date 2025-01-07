@@ -53,15 +53,12 @@ class AddMemberToGroup extends Component {
   render() {
     const {
       open,
+      intl,
       handleClose,
       handleConfirm,
-      intl,
-      neighbourStops,
-      stopPlaceCentroid,
       groupMembers,
-      roleAssignments,
-      fetchedPolygons,
-      allowNewStopEverywhere,
+      stopPlaceCentroid,
+      neighbourStops,
     } = this.props;
 
     const { formatMessage } = intl;
@@ -73,10 +70,7 @@ class AddMemberToGroup extends Component {
       groupMembers,
       stopPlaceCentroid,
       neighbourStops,
-      roleAssignments,
       10,
-      fetchedPolygons,
-      allowNewStopEverywhere,
     );
 
     return (
@@ -124,14 +118,10 @@ AddMemberToGroup.propTypes = {
   handleConfirm: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = ({ stopPlace, roles, stopPlacesGroup }) => ({
-  neighbourStops: stopPlace.neighbourStops || [],
+const mapStateToProps = ({ stopPlace, stopPlacesGroup }) => ({
+  groupMembers: stopPlacesGroup.current.members || [],
   stopPlaceCentroid: stopPlacesGroup.centerPosition,
-  groupMembers: stopPlacesGroup.current.members,
-  stopHasBeenModified: stopPlacesGroup.stopHasBeenModified,
-  roleAssignments: roles.auth.roleAssignments,
-  fetchedPolygons: roles.fetchedPolygons,
-  allowNewStopEverywhere: roles.allowNewStopEverywhere,
+  neighbourStops: stopPlace.neighbourStops || [],
 });
 
 export default connect(mapStateToProps)(injectIntl(AddMemberToGroup));

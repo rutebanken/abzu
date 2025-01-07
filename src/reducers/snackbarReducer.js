@@ -27,7 +27,7 @@ export const initialState = {
   },
 };
 
-const rolesReducer = (state = initialState, action) => {
+const snackbarReducer = (state = initialState, action) => {
   switch (action.type) {
     case APOLLO_MUTATION_ERROR:
       return Object.assign({}, state, {
@@ -62,4 +62,4 @@ const getErrorMsg = (error) => {
   return null;
 };
 
-export default rolesReducer;
+export default snackbarReducer;

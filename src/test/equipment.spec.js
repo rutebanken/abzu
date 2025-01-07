@@ -13,8 +13,8 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 import helpers from "../modelUtils/equipmentHelpers";
-import equiptedStopPlace from "./mock/equiptedStopPlace";
-import unequiptedStopPlace from "./mock/unequiptedStopPlace";
+import equiptedStopPlace from "./mock/equippedStopPlace";
+import unequiptedStopPlace from "./mock/unequippedStopPlace";
 
 import { simplifyPlaceEquipment } from "../models/stopPlaceUtils";
 
