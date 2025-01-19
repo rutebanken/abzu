@@ -80,7 +80,7 @@
     "@types/react-leaflet": "2.8.3",
     "@types/redux-logger": "3.0.13",
     "@vitejs/plugin-react": "4.3.4",
-    "@vitest/coverage-v8": "2.1.8",
+    "@vitest/coverage-v8": "3.0.2",
     "caniuse-lite": "1.0.30001695",
     "graphql-request": "7.1.2",
     "husky": "9.1.7",
