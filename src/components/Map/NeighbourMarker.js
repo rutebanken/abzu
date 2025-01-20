@@ -18,7 +18,7 @@ import React from "react";
 import ReactDOM from "react-dom/server";
 import { Marker, Popup } from "react-leaflet";
 import { connect } from "react-redux";
-import { isLegalChildStopPlace } from "../../utils/roleUtils";
+import { isLegalChildStopPlace } from "../../modelUtils/leafletUtils";
 import CustomMarkerIcon from "./CustomMarkerIcon";
 import PopupButton from "./PopupButton";
 import { shallowCompareNeighbourMarker as shallowCompare } from "./shallowCompare/";
@@ -87,9 +87,6 @@ class NeighbourMarker extends React.Component {
       stopPlace,
       isEditingGroup,
       handleCreateGroup,
-      roleAssignments,
-      fetchedPolygons,
-      allowNewStopEverywhere,
     } = this.props;
 
     const { isAllowedToCreateFrom } = this.state;
@@ -134,12 +131,7 @@ class NeighbourMarker extends React.Component {
         eventHandlers={{
           popupopen: () => {
             this.setState({
-              isAllowedToCreateFrom: isLegalChildStopPlace(
-                stopPlace,
-                roleAssignments,
-                fetchedPolygons,
-                allowNewStopEverywhere,
-              ),
+              isAllowedToCreateFrom: isLegalChildStopPlace(stopPlace),
             });
           },
         }}
@@ -233,8 +225,4 @@ class NeighbourMarker extends React.Component {
   }
 }
 
-export default connect(({ roles }) => ({
-  roleAssignments: roles.auth.roleAssignments,
-  fetchedPolygons: roles.fetchedPolygons,
-  allowNewStopEverywhere: roles.allowNewStopEverywhere,
-}))(NeighbourMarker);
+export default connect()(NeighbourMarker);

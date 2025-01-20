@@ -4,6 +4,7 @@ interface UserState {
     open: boolean;
     stopPlaceId: string;
   };
+  auth: any;
 }
 
 declare const initialState: UserState;

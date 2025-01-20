@@ -31,6 +31,9 @@ exports[`Model: map format from server to expected client model > should map Gra
   "parentTopographicPlace": "Østfold",
   "parking": [],
   "permanentlyTerminated": false,
+  "permissions": {
+    "canEdit": true,
+  },
   "quays": [
     {
       "accessibilityAssessment": {

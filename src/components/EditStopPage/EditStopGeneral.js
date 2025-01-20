@@ -12,18 +12,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import MdBack from "@mui/icons-material/ArrowBack";
-import MdLess from "@mui/icons-material/ExpandLess";
-import MdSave from "@mui/icons-material/Save";
-import MdUndo from "@mui/icons-material/Undo";
-import FlatButton from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
+// React and Redux
 import React from "react";
 import { injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import { replace } from "redux-first-history";
+
+// Material UI Icons
+import MdBack from "@mui/icons-material/ArrowBack";
+import MdLess from "@mui/icons-material/ExpandLess";
+import MdSave from "@mui/icons-material/Save";
+import MdUndo from "@mui/icons-material/Undo";
+
+// Material UI Components
+import FlatButton from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+
+// Actions
 import { StopPlaceActions, UserActions } from "../../actions/";
 import {
   deleteQuay,
@@ -42,15 +49,8 @@ import {
   terminateStop,
 } from "../../actions/TiamatActions";
 import * as types from "../../actions/Types";
-import { MutationErrorCodes } from "../../models/ErrorCodes";
-import mapToMutationVariables from "../../modelUtils/mapToQueryVariables";
-import {
-  shouldMutateParking,
-  shouldMutatePathLinks,
-} from "../../modelUtils/shouldMutate";
-import Routes from "../../routes/";
-import Settings from "../../singletons/SettingsManager";
-import { getIn, getIsCurrentVersionMax } from "../../utils/";
+
+// Components
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
 import DeleteQuayDialog from "../Dialogs/DeleteQuayDialog";
 import MergeQuaysDialog from "../Dialogs/MergeQuaysDialog";
@@ -64,6 +64,17 @@ import EditStopAdditional from "./EditStopAdditional";
 import EditStopBoxTabs from "./EditStopBoxTabs";
 import StopPlaceDetails from "./StopPlaceDetails";
 import VersionsPopover from "./VersionsPopover";
+
+// Utils
+import mapToMutationVariables from "../../modelUtils/mapToQueryVariables";
+import {
+  shouldMutateParking,
+  shouldMutatePathLinks,
+} from "../../modelUtils/shouldMutate";
+import Routes from "../../routes/";
+import Settings from "../../singletons/SettingsManager";
+import { getIsCurrentVersionMax } from "../../utils/";
+import { getStopPermissions } from "../../utils/permissionsUtils";
 
 class EditStopGeneral extends React.Component {
   constructor(props) {
@@ -825,46 +836,46 @@ class EditStopGeneral extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  stopPlace: state.stopPlace.current,
-  mergeStopDialogOpen: state.stopPlace.mergeStopDialog
-    ? state.stopPlace.mergeStopDialog.isOpen
-    : false,
-  mergeSource: state.stopPlace.mergeStopDialog,
-  pathLink: state.stopPlace.pathLink,
-  stopHasBeenModified: state.stopPlace.stopHasBeenModified,
-  isMultiPolylinesEnabled: state.stopPlace.enablePolylines,
-  activeElementTab: state.user.activeElementTab,
-  showEditQuayAdditional: state.user.showEditQuayAdditional,
-  showEditStopAdditional: state.user.showEditStopAdditional,
-  mergingQuay: state.mapUtils.mergingQuay,
-  mergingQuayDialogOpen: state.mapUtils.mergingQuayDialogOpen,
-  deleteQuayDialogOpen: state.mapUtils.deleteQuayDialogOpen,
-  deleteQuayImportedId: state.mapUtils.deleteQuayImportedId,
-  deleteStopDialogOpen: state.mapUtils.deleteStopDialogOpen,
-  deletingQuay: state.mapUtils.deletingQuay,
-  versions: state.stopPlace.versions,
-  originalPathLink: state.stopPlace.originalPathLink,
-  moveQuayDialogOpen: state.mapUtils.moveQuayDialogOpen,
-  moveQuayToNewStopDialogOpen: state.mapUtils.moveQuayToNewStopDialogOpen,
-  movingQuay: state.mapUtils.movingQuay,
-  movingQuayToNewStop: state.mapUtils.movingQuayToNewStop,
-  activeMap: state.mapUtils.activeMap,
-  canDeleteStop: getIn(state.roles, ["allowanceInfo", "canDeleteStop"], false),
-  canEditParentStop: getIn(
-    state.roles,
-    ["allowanceInfo", "canEditParentStop"],
-    false,
-  ),
-  originalStopPlace: state.stopPlace.originalCurrent,
-  serverTimeDiff: state.user.serverTimeDiff,
-  isFetchingMergeInfo: state.stopPlace.isFetchingMergeInfo,
-  neighbourStopQuays: state.stopPlace.neighbourStopQuays,
-  deleteStopDialogWarning: state.user.deleteStopDialogWarning,
-  fetchOTPInfoMergeLoading: state.mapUtils.fetchOTPInfoMergeLoading,
-  mergeQuayWarning: state.mapUtils.mergeQuayWarning,
-  fetchOTPInfoDeleteLoading: state.mapUtils.fetchOTPInfoDeleteLoading,
-  deleteQuayWarning: state.mapUtils.deleteQuayWarning,
-});
+const mapStateToProps = (state) => {
+  const stopPlace = state.stopPlace.current;
+  const permissions = getStopPermissions(stopPlace);
+  return {
+    canDeleteStop: permissions.canDelete,
+    stopPlace,
+    mergeStopDialogOpen: state.stopPlace.mergeStopDialog
+      ? state.stopPlace.mergeStopDialog.isOpen
+      : false,
+    mergeSource: state.stopPlace.mergeStopDialog,
+    pathLink: state.stopPlace.pathLink,
+    stopHasBeenModified: state.stopPlace.stopHasBeenModified,
+    isMultiPolylinesEnabled: state.stopPlace.enablePolylines,
+    activeElementTab: state.user.activeElementTab,
+    showEditQuayAdditional: state.user.showEditQuayAdditional,
+    showEditStopAdditional: state.user.showEditStopAdditional,
+    mergingQuay: state.mapUtils.mergingQuay,
+    mergingQuayDialogOpen: state.mapUtils.mergingQuayDialogOpen,
+    deleteQuayDialogOpen: state.mapUtils.deleteQuayDialogOpen,
+    deleteQuayImportedId: state.mapUtils.deleteQuayImportedId,
+    deleteStopDialogOpen: state.mapUtils.deleteStopDialogOpen,
+    deletingQuay: state.mapUtils.deletingQuay,
+    versions: state.stopPlace.versions,
+    originalPathLink: state.stopPlace.originalPathLink,
+    moveQuayDialogOpen: state.mapUtils.moveQuayDialogOpen,
+    moveQuayToNewStopDialogOpen: state.mapUtils.moveQuayToNewStopDialogOpen,
+    movingQuay: state.mapUtils.movingQuay,
+    movingQuayToNewStop: state.mapUtils.movingQuayToNewStop,
+    activeMap: state.mapUtils.activeMap,
+    canEditParentStop: permissions.canEditParentStop || false,
+    originalStopPlace: state.stopPlace.originalCurrent,
+    serverTimeDiff: state.user.serverTimeDiff,
+    isFetchingMergeInfo: state.stopPlace.isFetchingMergeInfo,
+    neighbourStopQuays: state.stopPlace.neighbourStopQuays,
+    deleteStopDialogWarning: state.user.deleteStopDialogWarning,
+    fetchOTPInfoMergeLoading: state.mapUtils.fetchOTPInfoMergeLoading,
+    mergeQuayWarning: state.mapUtils.mergeQuayWarning,
+    fetchOTPInfoDeleteLoading: state.mapUtils.fetchOTPInfoDeleteLoading,
+    deleteQuayWarning: state.mapUtils.deleteQuayWarning,
+  };
+};
 
 export default injectIntl(connect(mapStateToProps)(EditStopGeneral));

@@ -16,8 +16,8 @@ import MenuItem from "@mui/material/MenuItem";
 import React from "react";
 import {
   getInverseSubmodesWhitelist,
-  getStopPlacesForSubmodes,
-} from "../../roles/rolesParser";
+  getStopTypesForSubmodes,
+} from "../../modelUtils/modeUtils";
 import ModalityIconSvg from "../MainPage/ModalityIconSvg";
 import MoreMenuItem from "../MainPage/MoreMenuItem";
 
@@ -38,7 +38,7 @@ class ModalitiesMenuItems extends React.Component {
     const blacklistedStopTypes = allowsInfo.blacklistedStopPlaceTypes || [];
     const illegalSubmodes = getInverseSubmodesWhitelist(legalSubmodes);
     // stopPlacesTypes that submodes are depending on to be legal in order to render
-    const adHocStopPlaceTypes = getStopPlacesForSubmodes(legalSubmodes);
+    const adHocStopPlaceTypes = getStopTypesForSubmodes(legalSubmodes);
     const chosenStyle = { fontWeight: "bold" };
     const unchosenStyle = {};
 

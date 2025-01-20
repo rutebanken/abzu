@@ -345,6 +345,7 @@ helpers.mapSearchResultParentStopPlace = (stop) => {
       tags: stop.tags,
       geometry: stop.geometry,
       entityType: Entities.STOP_PLACE,
+      permissions: stop.permissions,
     };
 
     if (stop.groups && stop.groups.length) {

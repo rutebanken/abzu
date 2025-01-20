@@ -51,6 +51,7 @@ class GroupOfStopPlace {
         entityType: Entities.GROUP_OF_STOP_PLACE,
         id: data.id,
         name: data.name ? data.name.value : "",
+        permissions: data.permissions,
         members: data.members.map((member) => {
           const isParent = member["__typename"] === "ParentStopPlace";
           if (isParent) {

@@ -13,7 +13,6 @@ See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
 import { LatLng } from "leaflet";
-import { isLegalChildStopPlace } from "../utils/roleUtils";
 
 export const getUniquePathLinks = (a, key) => {
   var seen = {};
@@ -51,10 +50,7 @@ export const getChildStopPlaceSuggestions = (
   children,
   stopPlaceCentroid,
   neighbourStops,
-  roleAssignments,
   nFirst,
-  fetchedPolygons,
-  allowNewStopEverywhere,
 ) => {
   const alreadyAdded = children.map((child) => child.id);
 
@@ -82,12 +78,8 @@ export const getChildStopPlaceSuggestions = (
 
   const legalSuggestions = (suggestions || []).filter(
     (suggestion) =>
-      isLegalChildStopPlace(
-        suggestion,
-        roleAssignments,
-        fetchedPolygons,
-        allowNewStopEverywhere,
-      ) && isChildTooFarAway(suggestion.distance),
+      isLegalChildStopPlace(suggestion) &&
+      isChildTooFarAway(suggestion.distance),
   );
 
   return legalSuggestions.slice(0, nFirst);
@@ -97,10 +89,7 @@ export const getGroupMemberSuggestions = (
   exisitingMembers,
   centroid,
   neighbourStops,
-  roleAssignments,
   nFirst,
-  fetchedPolygons,
-  allowNewStopEverywhere,
 ) => {
   const alreadyAdded = exisitingMembers.map((member) => member.id);
 
@@ -126,13 +115,16 @@ export const getGroupMemberSuggestions = (
   const legalSuggestions = (suggestions || []).filter(
     (suggestion) =>
       isMemberTooFarAway(suggestion.distance) &&
-      isLegalChildStopPlace(
-        suggestion,
-        roleAssignments,
-        fetchedPolygons,
-        allowNewStopEverywhere,
-      ),
+      isLegalChildStopPlace(suggestion),
   );
 
   return legalSuggestions.slice(0, nFirst);
+};
+
+export const isLegalChildStopPlace = (stopPlace) => {
+  if (!stopPlace) {
+    return false;
+  }
+
+  return stopPlace.permissions?.canEdit || false;
 };

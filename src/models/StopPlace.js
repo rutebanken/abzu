@@ -51,6 +51,7 @@ class StopPlace {
         adjacentSites: stop.adjacentSites,
         entityType: Entities.STOP_PLACE,
         permanentlyTerminated: stop.modificationEnumeration === "delete",
+        permissions: stop.permissions,
       };
 
       if (stop.groups && stop.groups.length) {

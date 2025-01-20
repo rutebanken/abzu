@@ -12,8 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and
 limitations under the Licence. */
 
-import { getCentroid, isCoordinatesInsidePolygon } from "../utils/mapUtils";
-import polygonVestfold from "./mock/polygon-vestfold";
+import { getCentroid } from "../utils/mapUtils";
 
 describe("mapUtils", () => {
   test("should return centroid of a list of latlngs", () => {
@@ -35,28 +34,5 @@ describe("mapUtils", () => {
     const centroid = getCentroid(emptyListOfLatLngs, originalCentroid);
 
     expect(centroid).toEqual(originalCentroid);
-  });
-
-  test("is latLng inside polygon", () => {
-    let latLngSandefjord = [59.135352, 10.222701];
-    let latLngOsloS = [59.909512, 10.753839];
-    let latLngVerketNearVestfold = [59.613143, 10.4132];
-
-    let isSandefjordInside = isCoordinatesInsidePolygon(
-      latLngSandefjord,
-      polygonVestfold,
-    );
-    let isOsloSInside = isCoordinatesInsidePolygon(
-      latLngOsloS,
-      polygonVestfold,
-    );
-    let isVerketNearVestFoldInside = isCoordinatesInsidePolygon(
-      latLngVerketNearVestfold,
-      polygonVestfold,
-    );
-
-    expect(isSandefjordInside).toEqual(true);
-    expect(isVerketNearVestFoldInside).toEqual(false);
-    expect(isOsloSInside).toEqual(false);
   });
 });

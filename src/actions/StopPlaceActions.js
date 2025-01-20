@@ -14,9 +14,9 @@ limitations under the Licence. */
 
 import { createThunk, UserActions } from ".";
 import { Entities } from "../models/Entities";
-import { getIn } from "../utils";
 import { getCentroid } from "../utils/mapUtils";
 import { updateURLWithId } from "../utils/URLhelpers";
+import { getLocationPermissionsForCoordinates } from "./TiamatActions";
 import * as types from "./Types";
 
 var StopPlaceActions = {};
@@ -60,9 +60,7 @@ StopPlaceActions.sortQuays = (attribute) => (dispatch) => {
   dispatch(createThunk(types.SORTED_QUAYS, attribute));
 };
 
-StopPlaceActions.useNewStopAsCurrent = () => (dispatch, getState) => {
-  let state = getState();
-  let location = getIn(state, ["stopPlace", "newStop", "location"], null);
+StopPlaceActions.useNewStopAsCurrent = () => (dispatch) => {
   dispatch(createThunk(types.USE_NEW_STOP_AS_CURRENT, location));
 };
 
@@ -147,13 +145,19 @@ StopPlaceActions.createKeyValuesPair =
     );
   };
 
-StopPlaceActions.setMarkerOnMap = (data) => (dispatch) => {
+StopPlaceActions.setMarkerOnMap = (data) => (dispatch, getState) => {
   dispatch(
     createThunk(
       types.SET_ACTIVE_MARKER,
       Object.assign({}, data, { isActive: true }),
     ),
   );
+
+  const { location } = data;
+  if (location) {
+    dispatch(getLocationPermissionsForCoordinates(location[0], location[1]));
+  }
+
   if (data.entityType === Entities.STOP_PLACE) {
     updateURLWithId("stopPlaceId", data.id);
   } else if (data.entityType === Entities.GROUP_OF_STOP_PLACE) {
@@ -316,13 +320,24 @@ StopPlaceActions.setBoardingPositionElementFocus =
     );
   };
 
-StopPlaceActions.createNewStop = (location) => (dispatch, getState) => {
+StopPlaceActions.createNewStop = (location) => async (dispatch, getState) => {
   const state = getState();
   const isMultimodal = state.user.newStopIsMultiModal;
+
+  // First get location permissions
+  await dispatch(
+    getLocationPermissionsForCoordinates(location.lng, location.lat),
+  );
+
+  // Get updated state after permissions are fetched
+  const updatedState = getState();
+  const locationPermissions = updatedState.user?.locationPermissions || {};
+
   dispatch(
     createThunk(types.CREATED_NEW_STOP, {
       isMultimodal,
       location: [Number(location.lat), Number(location.lng)],
+      locationPermissions,
     }),
   );
 };

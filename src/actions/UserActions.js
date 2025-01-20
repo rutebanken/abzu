@@ -15,7 +15,9 @@ limitations under the Licence. */
 import { push } from "redux-first-history";
 import {
   getAddStopPlaceInfo,
+  getLocationPermissionsForCoordinates,
   getMergeInfoForStops,
+  getUserPermissions,
 } from "../actions/TiamatActions";
 import { checkQuayUsage, checkStopPlaceUsage } from "../graphql/OTP/actions";
 import configureLocalization from "../localization/localization";
@@ -629,6 +631,10 @@ UserActions.createMultimodalWith = (stopPlaceId, fromMain) => (dispatch) => {
           fromMain,
         }),
       );
+      const { location } = newStopPlace;
+      dispatch(
+        getLocationPermissionsForCoordinates(location.lng, location.lat),
+      );
       dispatch(UserActions.navigateTo(`/${Routes.STOP_PLACE}/`, "new"));
     }
   });
@@ -658,3 +664,15 @@ const getQuaysForMergeInfo = (stopPlace) => {
 };
 
 export default UserActions;
+
+export const updateAuth = (auth) => (dispatch) => {
+  dispatch(createThunk(types.UPDATED_AUTH, auth));
+};
+
+export const fetchUserPermissions = () => (dispatch, getState) => {
+  dispatch(getUserPermissions());
+};
+
+export const fetchLocationPermissions = (position) => (dispatch) => {
+  dispatch(getLocationPermissionsForCoordinates(position[1], position[0]));
+};

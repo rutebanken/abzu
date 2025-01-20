@@ -14,6 +14,7 @@
 
 import {
   getAddStopPlaceInfo,
+  getLocationPermissionsForCoordinates,
   getStopPlaceById,
 } from "../actions/TiamatActions";
 import Routes from "../routes/";
@@ -79,7 +80,16 @@ StopPlacesGroupActions.createNewGroup = (stopPlaceId) => (dispatch) => {
         result.data.stopPlace &&
         result.data.stopPlace.length
       ) {
+        const stopPlace = result.data.stopPlace[0];
         dispatch(createThunk(types.SETUP_NEW_GROUP, result));
+        if (stopPlace.location) {
+          dispatch(
+            getLocationPermissionsForCoordinates(
+              stopPlace.location[0],
+              stopPlace.location[1],
+            ),
+          );
+        }
       } else {
         dispatch(createThunk(types.ERROR_NEW_GROUP, null));
         dispatch(UserActions.navigateTo("/", ""));

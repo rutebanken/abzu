@@ -71,7 +71,7 @@ export const getTariffZonesForFilterAction = createAsyncThunk<
   const response = await getTiamatClient().query({
     query: findTariffZonesForFilter,
     fetchPolicy: "network-only",
-    context: getContext(thunkAPI.getState().roles.auth),
+    context: getContext(thunkAPI.getState().user.auth),
   });
 
   return response.data.tariffZones;
@@ -85,7 +85,7 @@ export const getFareZonesForFilterAction = createAsyncThunk<
   const response = await getTiamatClient().query({
     query: findFareZonesForFilter,
     fetchPolicy: "network-only",
-    context: getContext(thunkAPI.getState().roles.auth),
+    context: getContext(thunkAPI.getState().user.auth),
   });
 
   return response.data.fareZones;
@@ -100,7 +100,7 @@ export const getTariffZonesByIdsAction = createAsyncThunk<
     query: findTariffZonesByIds,
     variables: { ids },
     fetchPolicy: "network-only",
-    context: getContext(thunkAPI.getState().roles.auth),
+    context: getContext(thunkAPI.getState().user.auth),
   });
   return response.data.tariffZones;
 });
@@ -114,7 +114,7 @@ export const getFareZonesByIdsAction = createAsyncThunk<
     query: findFareZones,
     variables: { ids },
     fetchPolicy: "network-only",
-    context: getContext(thunkAPI.getState().roles.auth),
+    context: getContext(thunkAPI.getState().user.auth),
   });
 
   return response.data.fareZones;

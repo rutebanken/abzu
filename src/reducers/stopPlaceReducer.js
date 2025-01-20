@@ -182,13 +182,16 @@ const stopPlaceReducer = (state = initialState, action) => {
       });
 
     case types.CREATED_NEW_STOP:
-      const { location, isMultimodal } = action.payload;
+      const { location, isMultimodal, locationPermissions } = action.payload;
       const stopToBeCreated = isMultimodal
         ? formatHelpers.createNewParentStopFromLocation(location)
         : formatHelpers.createNewStopFromLocation(location);
 
       return Object.assign({}, state, {
-        newStop: stopToBeCreated,
+        newStop: {
+          ...stopToBeCreated,
+          permissions: locationPermissions,
+        },
         originalCurrent: JSON.parse(JSON.stringify(stopToBeCreated)),
         versions: [],
         pathLink: [],
